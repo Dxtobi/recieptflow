@@ -2,7 +2,7 @@ services:
   - type: web
     name: receiptflow
     env: node
-    buildCommand: npm run build
+    buildCommand: echo "Build is part of start"
     startCommand: npm start
     envVars:
       - key: NODE_ENV

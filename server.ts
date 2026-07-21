@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import path from "path";
+import fs from "fs";
 import mongoose from "mongoose";
 import { createServer as createViteServer } from "vite";
 import { UserModel, CustomerModel, ProductModel, ReceiptModel, StatsModel } from "./models";
