@@ -1,0 +1,6 @@
+{
+  "name": "ReceiptFlow",
+  "description": "Generate professional branded receipts in seconds. Clean layout, fast guest mode, PDF/Image export, and cloud synchronization.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
