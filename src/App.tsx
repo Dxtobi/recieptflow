@@ -20,8 +20,8 @@ import {
   ShoppingBag,
   Settings,
   LogOut,
-  Sparkles,
   ArrowRight,
+  Zap,
   User,
   Lock,
   Loader,
@@ -55,8 +55,7 @@ function AppContent() {
   const [previewReceipt, setPreviewReceipt] = useState<Receipt | null>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
-  const [landingStats, setLandingStats] = useState<{ totalReceipts: number; totalUsers: number } | null>(null);
-  const [downloadCount, setDownloadCount] = useState(0);
+  const [landingStats, setLandingStats] = useState<{ totalReceipts: number; totalUsers: number; totalDownloads: number } | null>(null);
 
   // Initialize store and check previous sessions
   useEffect(() => {
@@ -213,7 +212,7 @@ function AppContent() {
     try {
       const res = await fetch("/api/track-download", { method: "POST" });
       const data = await res.json();
-      setDownloadCount(data.totalDownloads);
+      setLandingStats(prev => prev ? { ...prev, totalDownloads: data.totalDownloads } : prev);
     } catch {}
     window.open("/receiptflow.apk", "_blank");
   };
@@ -290,7 +289,7 @@ function AppContent() {
         <main className="max-w-7xl mx-auto w-full px-6 py-12 md:py-20 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center flex-1">
           <div className="lg:col-span-6 space-y-6">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-zinc-100 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 rounded-full text-xs font-semibold border border-zinc-200 dark:border-zinc-800">
-              <Sparkles className="w-3.5 h-3.5" /> Fast, Professional & Unlimited
+              <Zap className="w-3.5 h-3.5" /> Fast, Professional & Unlimited
             </div>
             
             <h2 className="text-4xl sm:text-5xl font-extrabold text-zinc-900 dark:text-white leading-tight tracking-tight">
@@ -333,7 +332,7 @@ function AppContent() {
               </div>
               <div>
                 <h4 className="text-xl font-extrabold text-zinc-900 dark:text-white">
-                  {downloadCount ? downloadCount.toLocaleString() : "—"}
+                  {landingStats ? landingStats.totalDownloads.toLocaleString() : "—"}
                 </h4>
                 <p className="text-[10px] text-zinc-500 uppercase tracking-wider mt-0.5">Downloads</p>
               </div>

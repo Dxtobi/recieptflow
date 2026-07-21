@@ -350,9 +350,16 @@ app.get("/api/dashboard", async (req, res) => {
 
 // Global Stats (public, no auth required)
 app.get("/api/stats", async (req, res) => {
-  const totalReceipts = await ReceiptModel.countDocuments();
-  const totalUsers = await UserModel.countDocuments();
-  res.json({ totalReceipts, totalUsers });
+  const [totalReceipts, totalUsers, statsDoc] = await Promise.all([
+    ReceiptModel.countDocuments(),
+    UserModel.countDocuments(),
+    StatsModel.findOne(),
+  ]);
+  res.json({
+    totalReceipts,
+    totalUsers,
+    totalDownloads: statsDoc?.totalDownloads || 0,
+  });
 });
 
 // Track app download

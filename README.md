@@ -1,20 +1,29 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# ReceiptFlow
 
-# Run and deploy your AI Studio app
+Create and share professional receipts in seconds. Free receipt generator for small businesses, freelancers, online vendors, and WhatsApp sellers.
 
-This contains everything you need to run your app locally.
+## Features
 
-View your app in AI Studio: https://ai.studio/apps/5031478e-1447-4a10-af72-9e585b6c27a8
+- Generate branded receipts with 4 templates (classic, modern, minimal, thermal)
+- Calculate discounts, taxes, and shipping automatically
+- Export to PDF/PNG or share via WhatsApp
+- Customer & product database
+- Dashboard analytics with sales tracking
+- Guest mode (no sign-up required)
+- Mobile app (Android via Capacitor)
 
 ## Run Locally
 
-**Prerequisites:**  Node.js
+**Prerequisites:** Node.js, MongoDB
 
+1. Install dependencies: `npm install`
+2. Set `MONGODB_URI` in `.env.local` (e.g. `mongodb://localhost:27017/receiptflow`)
+3. Run the app: `npm run dev`
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Deploy
+
+Push to GitHub and deploy on Render as a Web Service:
+
+- **Build Command:** `npm run build`
+- **Start Command:** `npm start`
+- **Env Vars:** `MONGODB_URI`, `NODE_ENV=production`
