@@ -5,3 +5,4 @@ ios/
 .env.local
 .env
 *.log
+public/receiptflow.apk
