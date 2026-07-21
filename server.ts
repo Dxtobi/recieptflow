@@ -375,17 +375,23 @@ async function startServer() {
   const publicPath = path.join(process.cwd(), "public");
   app.use(express.static(publicPath));
 
+  const distPath = path.join(process.cwd(), "dist");
+
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
     });
     app.use(vite.middlewares);
-  } else {
-    const distPath = path.join(process.cwd(), "dist");
+  } else if (fs.existsSync(path.join(distPath, "index.html"))) {
     app.use(express.static(distPath));
     app.get("*", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
+    });
+  } else {
+    console.log("dist/index.html not found — serving API-only mode");
+    app.get("*", (req, res) => {
+      res.status(200).send(`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ReceiptFlow</title></head><body><div id="root"></div><script>fetch('/api/stats').then(r=>r.json()).then(d=>{document.getElementById('root').innerHTML='<div style="font-family:sans-serif;padding:40px;max-width:600px;margin:auto;text-align:center"><h1>ReceiptFlow</h1><p>'+d.totalReceipts+' receipts created by '+d.totalUsers+' users</p><hr><p style="color:gray;font-size:14px">Frontend build not deployed. Run: npm run build</p></div>'})</script></body></html>`);
     });
   }
 
