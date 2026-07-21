@@ -51,7 +51,7 @@ export default function CustomerManager({
     <div className="space-y-6">
       {isGuest && (
         <div className="p-4 bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs text-zinc-600 dark:text-zinc-400">
-          💡 **Offline Mode:** Your customer list is saved locally on your browser. Log in or register anytime to sync your directory across all your devices.
+          Your customer list is saved locally in your browser. Sign in to sync across devices.
         </div>
       )}
       

@@ -358,7 +358,7 @@ export default function ReceiptForm({
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-zinc-900/50 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+      <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-zinc-900/50 p-4 sm:p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-4">
           <div>
             <h2 className="text-lg font-bold text-zinc-900 dark:text-white">New Receipt</h2>
@@ -519,7 +519,7 @@ export default function ReceiptForm({
 
         <div className="space-y-3">
           {receipt.items.map((item, idx) => (
-            <div key={idx} className="flex flex-col md:flex-row items-start md:items-end gap-3 p-3 bg-zinc-50/50 dark:bg-zinc-900/40 rounded-xl border border-zinc-200 dark:border-zinc-800">
+            <div key={idx} className="flex flex-col md:flex-row items-start md:items-end gap-2 sm:gap-3 p-2 sm:p-3 bg-zinc-50/50 dark:bg-zinc-900/40 rounded-xl border border-zinc-200 dark:border-zinc-800">
               
               {/* Product Select (for everyone) */}
               {products.length > 0 && (

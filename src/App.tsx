@@ -183,11 +183,19 @@ function AppContent() {
     
     setIsExporting(true);
     try {
-      // Capture at high quality for premium exports
+      // Wait for images (QR code) to finish loading
+      await Promise.all(
+        Array.from(target.querySelectorAll("img")).map(
+          (img) =>
+            img.complete
+              ? Promise.resolve()
+              : new Promise((resolve) => { img.onload = resolve; img.onerror = resolve; })
+        )
+      );
+      
       const canvas = await html2canvas(target, {
-        scale: 2,
+        scale: 3,
         useCORS: true,
-        allowTaint: true,
         backgroundColor: "#ffffff"
       });
       
@@ -233,7 +241,11 @@ function AppContent() {
       `*Payment Status:* ${previewReceipt.paymentStatus.toUpperCase()}\n\n` +
       `Thank you for doing business with ${store.businessProfile.name || "us"}!`;
       
-    navigator.clipboard.writeText(text);
+    try {
+      navigator.clipboard.writeText(text);
+    } catch {
+      // clipboard may not be available on insecure contexts
+    }
     
     // Open web sharing link
     const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
@@ -258,7 +270,7 @@ function AppContent() {
             </div>
             <div>
               <h1 className="font-extrabold text-lg tracking-tight text-zinc-900 dark:text-white">ReceiptFlow</h1>
-              <p className="text-[10px] text-zinc-400 font-mono">Invoice POS Generator</p>
+              <p className="text-[10px] text-zinc-400 font-mono">Receipt Generator</p>
             </div>
           </div>
 
@@ -322,7 +334,7 @@ function AppContent() {
                 <h4 className="text-xl font-extrabold text-zinc-900 dark:text-white">
                   {landingStats ? (landingStats.totalReceipts + 1500).toLocaleString() : "—"}
                 </h4>
-                <p className="text-[10px] text-zinc-500 uppercase tracking-wider mt-0.5">Receipts Created</p>
+                <p className="text-[10px] text-zinc-500 uppercase tracking-wider mt-0.5">Invoices Created</p>
               </div>
               <div>
                 <h4 className="text-xl font-extrabold text-zinc-900 dark:text-white">
@@ -344,10 +356,9 @@ function AppContent() {
             <div className="w-full max-w-[420px] mx-auto bg-white dark:bg-zinc-900 p-6 rounded-3xl shadow-xl border border-zinc-200 dark:border-zinc-800 space-y-4">
               <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800/60 pb-3">
                 <div>
-                  <h4 className="font-extrabold text-zinc-900 dark:text-white text-sm">Preview Mockup</h4>
-                  <p className="text-[10px] text-zinc-400">Classic Theme Layout</p>
+                  <h4 className="font-extrabold text-zinc-900 dark:text-white text-sm">Sample Receipt</h4>
+                  <p className="text-[10px] text-zinc-400">Classic Layout Preview</p>
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-[9px] bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200 font-bold uppercase">PAID</span>
               </div>
               
               <div className="text-zinc-700 dark:text-zinc-300 space-y-3 text-xs">
@@ -401,7 +412,7 @@ function AppContent() {
 
         {/* Footer */}
         <footer className="text-center text-xs text-zinc-400 py-6 border-t border-zinc-200 dark:border-zinc-800 max-w-7xl mx-auto w-full space-y-1">
-          <p>© 2026 ReceiptFlow. Created for instant, offline & cloud-backed mobile invoice generation.</p>
+          <p>© 2026 ReceiptFlow — Simple, fast receipt generation for small businesses.</p>
           <p className="text-[10px]">Built with React • MongoDB • Capacitor</p>
         </footer>
       </div>
@@ -531,7 +542,7 @@ function AppContent() {
         showMobileSidebar ? "translate-x-0" : "-translate-x-full"
       } transition-transform duration-200 md:relative md:flex shrink-0`}>
         
-        <div className="p-5 space-y-6">
+        <div className="p-3 sm:p-5 space-y-6">
           {/* Logo */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -659,7 +670,7 @@ function AppContent() {
         </div>
 
         {/* Footer info (User Account info & Logout) */}
-        <div className="p-4 border-t border-zinc-200 dark:border-zinc-900 space-y-3">
+        <div className="p-3 sm:p-4 border-t border-zinc-200 dark:border-zinc-900 space-y-3">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 bg-zinc-100 dark:bg-zinc-900 rounded-full flex items-center justify-center font-bold text-xs uppercase">
               {isRegisteredUser ? store.user?.email.slice(0, 2) : "GS"}
@@ -667,9 +678,6 @@ function AppContent() {
             <div className="overflow-hidden">
               <p className="text-[10px] font-bold text-zinc-800 dark:text-zinc-200 truncate leading-tight">
                 {isRegisteredUser ? store.user?.email : "Guest User"}
-              </p>
-              <p className="text-[9px] text-zinc-400 truncate leading-none mt-0.5">
-                {isRegisteredUser ? "Pro Plan Active" : "Temporary Session"}
               </p>
             </div>
           </div>
@@ -688,7 +696,7 @@ function AppContent() {
       <div className="flex-1 flex flex-col min-w-0">
         
         {/* Workspace Top Header */}
-        <header className="h-16 border-b border-zinc-200 dark:border-zinc-900 bg-white dark:bg-zinc-950 px-6 flex items-center justify-between gap-4">
+        <header className="h-16 border-b border-zinc-200 dark:border-zinc-900 bg-white dark:bg-zinc-950 px-3 sm:px-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowMobileSidebar(true)}
@@ -715,7 +723,7 @@ function AppContent() {
 
             <div className="hidden sm:block text-right">
               <h4 className="text-xs font-bold text-zinc-900 dark:text-zinc-100 leading-tight">
-                {store.businessProfile.name || "PixelCraft Studios"}
+                {store.businessProfile.name || "My Business"}
               </h4>
               <p className="text-[9px] text-zinc-400">
                 Prefix: RF • Currency: {store.businessProfile.currency || "$"}
@@ -725,7 +733,7 @@ function AppContent() {
         </header>
 
         {/* Content Box */}
-        <main className="flex-1 overflow-y-auto p-6 max-w-5xl w-full mx-auto">
+        <main className="flex-1 overflow-y-auto p-3 sm:p-6 max-w-5xl w-full mx-auto">
           
           {/* Redirect guests trying to access registered-only tabs */}
           {["dashboard", "customers", "products"].includes(activeTab) && !isRegisteredUser && (
@@ -811,13 +819,13 @@ function AppContent() {
 
       {/* Full Screen Receipt Preview Modal Overlay */}
       {previewReceipt && (
-        <div className="fixed inset-0 bg-zinc-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto select-none print:p-0 print:bg-white print:z-0">
+        <div className="fixed inset-0 bg-zinc-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto select-none print:p-0 print:bg-white print:z-0">
           
           {/* Main Sheet */}
           <div className="bg-zinc-100 dark:bg-zinc-950 w-full max-w-5xl rounded-3xl flex flex-col md:flex-row shadow-2xl h-[90vh] overflow-hidden border border-zinc-200 dark:border-zinc-800 print:h-auto print:border-none print:shadow-none print:rounded-none">
             
             {/* Left Preview Box */}
-            <div className="flex-1 overflow-y-auto p-4 md:p-8 flex justify-center bg-zinc-200/40 dark:bg-zinc-900/40 print:p-0 print:bg-white">
+            <div className="flex-1 overflow-y-auto p-3 md:p-8 flex justify-center bg-zinc-200/40 dark:bg-zinc-900/40 print:p-0 print:bg-white">
               <div className="w-full max-w-[700px] h-fit">
                 <ReceiptPreview
                   receipt={previewReceipt}
@@ -828,7 +836,7 @@ function AppContent() {
             </div>
 
             {/* Right Control Actions Panel */}
-            <div className="w-full md:w-80 bg-white dark:bg-zinc-900 border-t md:border-t-0 md:border-l border-zinc-200 dark:border-zinc-800 p-6 flex flex-col justify-between shrink-0 print:hidden">
+            <div className="w-full md:w-80 bg-white dark:bg-zinc-900 border-t md:border-t-0 md:border-l border-zinc-200 dark:border-zinc-800 p-4 sm:p-6 flex flex-col justify-between shrink-0 print:hidden">
               
               {/* Header */}
               <div className="space-y-4">

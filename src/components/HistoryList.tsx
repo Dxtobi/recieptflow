@@ -42,7 +42,7 @@ export default function HistoryList({
   return (
     <div className="space-y-4">
       {/* Search and Filters Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white dark:bg-zinc-900/50 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white dark:bg-zinc-900/50 p-3 sm:p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-3 w-4 h-4 text-zinc-400" />
           <input
@@ -71,13 +71,13 @@ export default function HistoryList({
 
       {/* Guest warning banner for History */}
       {!isRegisteredUser && (
-        <div className="flex flex-col md:flex-row items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl border border-zinc-200 dark:border-zinc-800 gap-3">
+        <div className="flex flex-col md:flex-row items-center justify-between p-3 sm:p-4 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl border border-zinc-200 dark:border-zinc-800 gap-3">
           <div className="flex items-center gap-2.5">
             <ShieldAlert className="w-5 h-5 text-zinc-550 dark:text-zinc-400 flex-shrink-0" />
             <div>
-              <p className="text-xs font-bold text-zinc-800 dark:text-zinc-200">Offline Guest Mode Cache</p>
+              <p className="text-xs font-bold text-zinc-800 dark:text-zinc-200">Guest Mode</p>
               <p className="text-[10px] text-zinc-500 dark:text-zinc-400 leading-relaxed">
-                Your receipt log is stored in this browser's secure offline storage. Sign in anytime to secure them to our database.
+                Your receipts are saved locally in this browser. Sign in to back them up to the cloud.
               </p>
             </div>
           </div>
@@ -109,7 +109,7 @@ export default function HistoryList({
             return (
               <div
                 key={receipt.receiptId}
-                className="flex flex-col md:flex-row items-start md:items-center justify-between p-4 bg-white dark:bg-zinc-900/50 rounded-2xl border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 transition shadow-sm gap-4"
+                className="flex flex-col md:flex-row items-start md:items-center justify-between p-3 sm:p-4 bg-white dark:bg-zinc-900/50 rounded-2xl border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 transition shadow-sm gap-3 sm:gap-4"
               >
                 {/* Info */}
                 <div className="flex items-start gap-3.5">

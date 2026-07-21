@@ -169,6 +169,7 @@ export default function ReceiptPreview({ receipt, businessProfile, isRegisteredU
                 src={qrUrl} 
                 alt="Verification QR Code" 
                 className="w-24 h-24 border border-gray-300 p-1 mx-auto bg-white"
+                crossOrigin="anonymous"
                 referrerPolicy="no-referrer"
               />
               <p className="text-[8px] text-gray-500 uppercase">Scan to Verify Receipt</p>
@@ -184,8 +185,8 @@ export default function ReceiptPreview({ receipt, businessProfile, isRegisteredU
         </div>
 
         <div className="text-center text-[9px] mt-6 pt-2 border-t border-dashed border-gray-400">
-          <p>Thank you for shopping with us!</p>
-          <p>ReceiptFlow - Quick & Simple</p>
+          <p>Thank you for your business!</p>
+          <p>Generated with ReceiptFlow</p>
         </div>
       </div>
     );
@@ -324,11 +325,12 @@ export default function ReceiptPreview({ receipt, businessProfile, isRegisteredU
                   src={qrUrl} 
                   alt="Receipt verification QR code" 
                   className="w-16 h-16 border border-gray-200 p-1 bg-white"
+                  crossOrigin="anonymous"
                   referrerPolicy="no-referrer"
                 />
                 <div className="text-[10px] text-gray-500">
-                  <p className="font-bold text-gray-700 uppercase tracking-wide">SECURE RECEIPT</p>
-                  <p>This document is cryptographically verified and cloud-backed.</p>
+                  <p className="font-bold text-gray-700 uppercase tracking-wide">VERIFIED RECEIPT</p>
+                  <p>Authentic document backed by cloud storage.</p>
                   <p className="mt-0.5 text-[8px] font-mono text-gray-400">ID: {receiptNumber.replace(/[^a-zA-Z0-9]/g, "")}</p>
                 </div>
               </div>
@@ -391,7 +393,7 @@ export default function ReceiptPreview({ receipt, businessProfile, isRegisteredU
         </div>
         
         <div className="text-center text-[10px] text-gray-400 border-t border-slate-100 pt-4 mt-6">
-          <p>Thank you for doing business with {businessProfile.name || "us"}!</p>
+          <p>Thank you for your business!</p>
         </div>
       </div>
     </div>

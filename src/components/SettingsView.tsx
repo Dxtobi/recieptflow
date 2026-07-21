@@ -55,7 +55,7 @@ export default function SettingsView({
                 ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-950" 
                 : "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-400"
             }`}>
-              {isRegisteredUser ? "PRO REGISTERED" : "FREE GUEST"}
+              {isRegisteredUser ? "REGISTERED" : "GUEST"}
             </span>
           </div>
         </div>
@@ -81,10 +81,9 @@ export default function SettingsView({
 
           {/* Quick instructions / features list */}
           <div className="border-t border-zinc-200 dark:border-zinc-800 pt-3 text-xs text-zinc-500 space-y-1">
-            <p className="font-semibold text-zinc-700 dark:text-zinc-300">Default Configuration:</p>
-            <p>• Prefix: **RF-**</p>
-            <p>• Format: **PDF Export, thermal width**</p>
-            <p>• Language: **English (Default)**</p>
+            <p className="font-semibold text-zinc-700 dark:text-zinc-300">App Info</p>
+            <p>• Prefix: RF-</p>
+            <p>• Export: PDF/PNG supported</p>
           </div>
         </div>
 
@@ -109,7 +108,7 @@ export default function SettingsView({
 
       {/* Right Business Profile Edit Form */}
       <div className="lg:col-span-8">
-        <form onSubmit={handleSubmit} className="bg-white dark:bg-zinc-900/50 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-6">
+        <form onSubmit={handleSubmit} className="bg-white dark:bg-zinc-900/50 p-4 sm:p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-6">
           <div>
             <h3 className="font-bold text-zinc-900 dark:text-white">Business Settings</h3>
             <p className="text-xs text-zinc-500">Configure your business header branding details on receipts</p>
@@ -123,7 +122,7 @@ export default function SettingsView({
               <input
                 type="text"
                 required
-                placeholder="e.g. PixelCraft Studios"
+                placeholder="e.g. My Business"
                 value={profile.name}
                 onChange={(e) => handleFieldChange("name", e.target.value)}
                 className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 rounded-xl focus:outline-none focus:ring-1 focus:ring-zinc-400 text-zinc-900 dark:text-zinc-100"

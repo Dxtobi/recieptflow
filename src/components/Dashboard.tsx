@@ -43,7 +43,7 @@ export default function Dashboard({ stats, receipts, currencySymbol, onSelectRec
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* Total Revenue */}
-        <div className="bg-white dark:bg-zinc-900/50 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
+        <div className="bg-white dark:bg-zinc-900/50 p-4 sm:p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
           <div className="space-y-1">
             <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Total Revenue</p>
             <h3 className="text-xl font-extrabold text-zinc-900 dark:text-white">{formatCurrency(stats.revenue, currencySymbol)}</h3>
@@ -57,7 +57,7 @@ export default function Dashboard({ stats, receipts, currencySymbol, onSelectRec
         </div>
 
         {/* Monthly Sales */}
-        <div className="bg-white dark:bg-zinc-900/50 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
+        <div className="bg-white dark:bg-zinc-900/50 p-4 sm:p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
           <div className="space-y-1">
             <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Monthly Sales</p>
             <h3 className="text-xl font-extrabold text-zinc-900 dark:text-white">{formatCurrency(stats.monthlySales, currencySymbol)}</h3>
@@ -69,7 +69,7 @@ export default function Dashboard({ stats, receipts, currencySymbol, onSelectRec
         </div>
 
         {/* Today's Sales */}
-        <div className="bg-white dark:bg-zinc-900/50 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
+        <div className="bg-white dark:bg-zinc-900/50 p-4 sm:p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
           <div className="space-y-1">
             <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Today's Sales</p>
             <h3 className="text-xl font-extrabold text-zinc-900 dark:text-white">{formatCurrency(stats.todaySales, currencySymbol)}</h3>
@@ -81,7 +81,7 @@ export default function Dashboard({ stats, receipts, currencySymbol, onSelectRec
         </div>
 
         {/* Receipt Count */}
-        <div className="bg-white dark:bg-zinc-900/50 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
+        <div className="bg-white dark:bg-zinc-900/50 p-4 sm:p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
           <div className="space-y-1">
             <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Invoices Count</p>
             <h3 className="text-xl font-extrabold text-zinc-900 dark:text-white">{stats.receiptCount}</h3>
@@ -98,7 +98,7 @@ export default function Dashboard({ stats, receipts, currencySymbol, onSelectRec
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Invoice status distribution & latest history */}
-        <div className="lg:col-span-8 bg-white dark:bg-zinc-900/50 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-6">
+        <div className="lg:col-span-8 bg-white dark:bg-zinc-900/50 p-4 sm:p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-6">
           <div>
             <h3 className="font-bold text-zinc-900 dark:text-white">Receipt Status Analysis</h3>
             <p className="text-xs text-zinc-500">Distribution of payments across all generated receipts</p>
@@ -218,10 +218,10 @@ export default function Dashboard({ stats, receipts, currencySymbol, onSelectRec
           {/* Subscriptions detail card */}
           <div className="bg-zinc-50 dark:bg-zinc-800/40 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 text-center space-y-2 mt-4">
             <Award className="w-5 h-5 mx-auto text-zinc-900 dark:text-zinc-100" />
-            <h4 className="text-xs font-extrabold uppercase text-zinc-950 dark:text-zinc-100">ReceiptFlow Status</h4>
-            <p className="text-[10px] text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              You are running on **ReceiptFlow** with local offline speed, persistent data, and full PDF templates.
-            </p>
+              <h4 className="text-xs font-extrabold uppercase text-zinc-950 dark:text-zinc-100">ReceiptFlow</h4>
+              <p className="text-[10px] text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                Your data is stored locally and synced to the cloud when you save.
+              </p>
           </div>
         </div>
 
