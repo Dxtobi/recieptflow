@@ -38,8 +38,10 @@ jobs:
       - name: Build web assets
         run: VITE_APP_ENV=mobile npm run build
 
-      - name: Sync Capacitor
-        run: npx cap sync android
+      - name: Add and Sync Capacitor Android platform
+        run: |
+          npx cap add android
+          npx cap sync android
 
       - name: Build Android APK
         run: cd android && ./gradlew assembleDebug
