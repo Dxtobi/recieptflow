@@ -9,14 +9,20 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+function getSystemTheme(): Theme {
+  if (typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    return "dark";
+  }
+  return "light";
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
     const saved = localStorage.getItem("receiptflow-theme");
-    return (saved as Theme) || "light";
+    return (saved as Theme) || getSystemTheme();
   });
 
   useEffect(() => {
-    localStorage.setItem("receiptflow-theme", theme);
     const root = window.document.documentElement;
     if (theme === "dark") {
       root.classList.add("dark");
@@ -25,8 +31,25 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [theme]);
 
+  // Persist manual theme changes
+  const setThemeAndPersist = (t: Theme) => {
+    setTheme(t);
+    localStorage.setItem("receiptflow-theme", t);
+  };
+
+  // Listen for system theme changes when user hasn't set a preference
+  useEffect(() => {
+    const saved = localStorage.getItem("receiptflow-theme");
+    if (saved) return; // user has set a preference
+
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const handler = (e: MediaQueryListEvent) => setTheme(e.matches ? "dark" : "light");
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
   const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+    setThemeAndPersist(theme === "light" ? "dark" : "light");
   };
 
   return (
