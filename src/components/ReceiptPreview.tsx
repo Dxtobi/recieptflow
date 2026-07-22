@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { Receipt, BusinessProfile } from "../types";
 import { formatCurrency, formatDate } from "../utils";
-import JsBarcode from "jsbarcode";
+
 
 interface ReceiptPreviewProps {
   receipt: Receipt;
@@ -44,25 +44,6 @@ export default function ReceiptPreview({ receipt, businessProfile, isRegisteredU
     paid: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900/50",
     pending: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-900/50",
     overdue: "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/30 dark:text-rose-400 dark:border-rose-900/50"
-  };
-
-  const Barcode = ({ code }: { code: string }) => {
-    const ref = useRef<SVGSVGElement>(null);
-    useEffect(() => {
-      if (ref.current) {
-        try {
-          JsBarcode(ref.current, code.replace(/[^a-zA-Z0-9]/g, "").slice(0, 20) || "RF", {
-            format: "CODE128",
-            width: 1.5,
-            height: 40,
-            displayValue: true,
-            fontSize: 12,
-            margin: 5,
-          });
-        } catch {}
-      }
-    }, [code]);
-    return <svg ref={ref} className="mx-auto max-w-full" />;
   };
 
   if (isThermal) {
@@ -194,12 +175,6 @@ export default function ReceiptPreview({ receipt, businessProfile, isRegisteredU
           </div>
         )}
 
-        {/* Barcode */}
-        <div className="flex flex-col items-center mt-3">
-          <Barcode code={receiptNumber} />
-          <p className="text-[8px] text-gray-500 uppercase mt-1">Receipt Barcode</p>
-        </div>
-
         {/* QR Code and Signature */}
         <div className="mt-4 flex flex-col items-center space-y-3">
           {isRegisteredUser && (
@@ -225,7 +200,7 @@ export default function ReceiptPreview({ receipt, businessProfile, isRegisteredU
 
         <div className="text-center text-[9px] mt-6 pt-2 border-t border-dashed border-gray-400">
           <p>Thank you for your business!</p>
-          <p>Generated with ReceiptFlow</p>
+          <p className="text-[7px] text-gray-300 mt-1 tracking-widest uppercase font-light">ReceiptFlow</p>
         </div>
       </div>
     );
@@ -389,14 +364,6 @@ export default function ReceiptPreview({ receipt, businessProfile, isRegisteredU
             )}
           </div>
 
-          {/* Barcode */}
-          <div className="md:col-span-12 flex justify-center mt-2">
-            <div className="text-center">
-              <Barcode code={receiptNumber} />
-              <p className="text-[8px] text-gray-400 uppercase mt-1">Receipt Barcode</p>
-            </div>
-          </div>
-
           {/* Totals & Signature */}
           <div className="md:col-span-5 space-y-4">
             <div className="space-y-1.5 text-xs">
@@ -454,6 +421,7 @@ export default function ReceiptPreview({ receipt, businessProfile, isRegisteredU
         
         <div className="text-center text-[10px] text-gray-400 border-t border-slate-100 pt-4 mt-6">
           <p>Thank you for your business!</p>
+          <p className="text-[7px] text-gray-200 mt-1 tracking-[0.2em] uppercase font-light">ReceiptFlow</p>
         </div>
       </div>
     </div>

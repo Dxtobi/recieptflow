@@ -606,11 +606,7 @@ function AppContent() {
               onClick={() => {
                 const apiBase = import.meta.env.VITE_API_URL || window.location.origin;
                 const authUrl = `${apiBase}/api/auth/google`;
-                if (isNativeApp()) {
-                  window.open(authUrl, "_system");
-                } else {
-                  window.location.href = authUrl;
-                }
+                window.location.href = authUrl;
               }}
               className="w-full py-2.5 border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-xs font-bold rounded-xl transition flex items-center justify-center gap-2"
             >
