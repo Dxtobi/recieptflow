@@ -49,9 +49,19 @@ export default function ReceiptPreview({ receipt, businessProfile, isRegisteredU
     return (
       <div 
         id="printable-receipt" 
-        className="mx-auto max-w-[340px] bg-white p-4 text-black font-mono text-xs shadow-md border border-gray-100"
+        className="mx-auto max-w-[340px] bg-white p-4 text-black font-mono text-xs shadow-md border border-gray-100 relative"
         style={{ color: "#000000", fontFamily: "Courier New, monospace" }}
       >
+        {businessProfile.logo && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+            <img
+              src={businessProfile.logo}
+              alt=""
+              className="w-3/5 opacity-[0.04] object-contain"
+              aria-hidden="true"
+            />
+          </div>
+        )}
         {/* Thermal Header */}
         <div className="text-center space-y-1 mb-4">
           {businessProfile.logo && (
@@ -226,7 +236,17 @@ export default function ReceiptPreview({ receipt, businessProfile, isRegisteredU
   const style = templates[templateStyle as keyof typeof templates] || templates.classic;
 
   return (
-    <div id="printable-receipt" className={`${style.card} ${style.fontBody} w-full aspect-[1/1.414] overflow-hidden flex flex-col justify-between select-none`}>
+    <div id="printable-receipt" className={`${style.card} ${style.fontBody} w-full aspect-[1/1.414] overflow-hidden flex flex-col justify-between select-none relative`}>
+      {businessProfile.logo && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+          <img
+            src={businessProfile.logo}
+            alt=""
+            className="w-3/5 opacity-[0.04] object-contain"
+            aria-hidden="true"
+          />
+        </div>
+      )}
       {/* Top Header */}
       <div>
         <div className={`flex flex-col md:flex-row md:justify-between items-start md:items-center border-b ${style.borderClr} pb-6 gap-4`}>
