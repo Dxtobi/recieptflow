@@ -20,8 +20,6 @@
   },
   "dependencies": {
     "@capacitor/android": "^7.2.0",
-    "@capacitor/app": "^8.1.1",
-    "@capacitor/browser": "^8.0.4",
     "@capacitor/core": "^7.2.0",
     "@capacitor/ios": "^7.2.0",
     "@google/genai": "^2.4.0",
