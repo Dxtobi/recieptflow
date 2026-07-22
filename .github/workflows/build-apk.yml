@@ -43,7 +43,17 @@ jobs:
 
       - name: Add and Sync Capacitor Android platform
         run: |
+          # Backup custom icon files from git
+          mkdir -p /tmp/android-icons
+          if [ -d android/app/src/main/res/mipmap-hdpi ]; then
+            cp -r android/app/src/main/res/mipmap-* /tmp/android-icons/
+          fi
+          rm -rf android
           npx cap add android
+          # Restore custom icons
+          if [ -d /tmp/android-icons/mipmap-hdpi ]; then
+            cp -r /tmp/android-icons/* android/app/src/main/res/
+          fi
           npx cap sync android
 
       - name: Build Android APK
