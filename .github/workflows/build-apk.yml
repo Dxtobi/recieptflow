@@ -46,19 +46,20 @@ jobs:
       - name: Build Android APK
         run: cd android && ./gradlew assembleDebug
 
-      - name: Copy APK to public/
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk public/receiptflow.apk
-
       - name: Upload APK as artifact
         uses: actions/upload-artifact@v4
         with:
           name: receiptflow-apk
-          path: public/receiptflow.apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
 
-      - name: Create Release
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
+      - name: Upload APK to Latest Release
+        uses: ncipollo/release-action@v1
         with:
-          files: public/receiptflow.apk
-          generate_release_notes: true
+          tag: latest
+          name: Latest Build
+          artifacts: android/app/build/outputs/apk/debug/app-debug.apk
+          artifactContentType: application/vnd.android.package-archive
+          allowUpdates: true
+          replacesArtifacts: true
+          token: ${{ secrets.GITHUB_TOKEN }}

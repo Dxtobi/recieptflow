@@ -222,7 +222,7 @@ function AppContent() {
       const data = await res.json();
       setLandingStats(prev => prev ? { ...prev, totalDownloads: data.totalDownloads } : prev);
     } catch {}
-    window.open("/receiptflow.apk", "_blank");
+    window.open("https://github.com/Dxtobi/recieptflow/releases/download/latest/app-debug.apk", "_blank");
   };
 
   // WhatsApp share generator
