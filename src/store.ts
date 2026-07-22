@@ -28,6 +28,7 @@ interface AppState {
   login: (email: string, password: string) => Promise<boolean>;
   register: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
+  setUser: (user: User) => void;
   setGuestMode: (enabled: boolean) => void;
   updateBusinessProfile: (profile: Partial<BusinessProfile>) => Promise<boolean>;
   
@@ -190,6 +191,12 @@ export const useAppStore = create<AppState>((set, get) => ({
     localStorage.removeItem("rf_user");
     localStorage.removeItem("rf_isGuest");
     localStorage.removeItem("rf_guest_receipts");
+  },
+
+  setUser: (user) => {
+    set({ user, isGuest: false, businessProfile: user.businessProfile });
+    localStorage.setItem("rf_user", JSON.stringify(user));
+    localStorage.removeItem("rf_isGuest");
   },
 
   setGuestMode: (enabled) => {

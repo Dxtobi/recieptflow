@@ -75,6 +75,34 @@ function AppContent() {
     checkSession();
   }, []);
 
+  // Handle Google OAuth redirect (token in URL)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    const authError = params.get("auth_error");
+    if (token) {
+      // Clean URL
+      window.history.replaceState({}, "", window.location.pathname);
+      // Exchange token for user and log in
+      fetch("/api/auth/google/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      })
+        .then(r => r.json())
+        .then(user => {
+          if (user.uid) {
+            store.setUser(user);
+            setAppState("workspace");
+            setActiveTab("dashboard");
+          }
+        })
+        .catch(console.error);
+    } else if (authError) {
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, []);
+
   // Fetch public landing page stats
   useEffect(() => {
     if (appState !== "landing") return;
@@ -139,21 +167,27 @@ function AppContent() {
     setAppState("landing");
   };
 
+  const GUEST_MAX_RECEIPTS = 5;
+
   // Receipt creation / editing submission handler
   const handleSaveReceipt = async (receipt: Receipt) => {
     if (receipt.receiptId) {
       // Edit existing
       const success = await store.updateReceipt(receipt.receiptId, receipt);
       if (success) {
-        setPreviewReceipt(receipt); // Show updated preview
+        setPreviewReceipt(receipt);
         setActiveTab("history");
       }
     } else {
-      // Add new
+      // Guest limit check
+      if (!isRegisteredUser && store.receipts.length >= GUEST_MAX_RECEIPTS) {
+        alert(`Guest limit reached (${GUEST_MAX_RECEIPTS} receipts). Sign in to create unlimited receipts.`);
+        return;
+      }
       const created = await store.addReceipt(receipt);
       if (created) {
-        setPreviewReceipt(created); // Show full preview on creation
-        store.resetActiveReceipt(); // reset active form values
+        setPreviewReceipt(created);
+        store.resetActiveReceipt();
         setActiveTab("history");
       }
     }
@@ -498,7 +532,7 @@ function AppContent() {
 
             {isNativeApp() ? (
               <button
-                onClick={() => {/* TODO: implement Google Sign-In once OAuth keys are configured */}}
+                onClick={() => { window.location.href = "/api/auth/google"; }}
                 className="w-full py-2.5 border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-xs font-bold rounded-xl transition flex items-center justify-center gap-2"
               >
                 <span className="w-5 h-5 bg-white rounded-full flex items-center justify-center text-[11px] font-bold text-zinc-900 border border-zinc-200">G</span>
@@ -723,7 +757,9 @@ function AppContent() {
           <h2 className="text-sm font-extrabold text-zinc-900 dark:text-white capitalize flex items-center gap-1.5 min-w-0">
                 <span className="truncate">{activeTab === "create" ? "New Receipt" : activeTab === "settings" ? "Settings" : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}</span>
                 {!isRegisteredUser && activeTab === "create" && (
-                  <span className="text-[9px] px-1.5 py-0.5 bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 rounded font-medium">GUEST</span>
+                  <span className="text-[9px] px-1.5 py-0.5 bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 rounded font-medium">
+                    GUEST {store.receipts.length}/5
+                  </span>
                 )}
               </h2>
           </div>

@@ -2,7 +2,9 @@ import "dotenv/config";
 import express from "express";
 import path from "path";
 import fs from "fs";
+import crypto from "crypto";
 import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
 import { createServer as createViteServer } from "vite";
 import { UserModel, CustomerModel, ProductModel, ReceiptModel, StatsModel } from "./models";
 
@@ -163,6 +165,106 @@ app.post("/api/auth/login", async (req, res) => {
 
   const { password: _, ...userWithoutPassword } = user.toObject();
   res.json(userWithoutPassword);
+});
+
+// Google OAuth
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "";
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || "";
+const GOOGLE_CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL || "http://localhost:3000/api/auth/google/callback";
+const APP_URL = process.env.APP_URL || "http://localhost:5173";
+const JWT_SECRET = process.env.JWT_SECRET || "dev-jwt-secret-change-in-prod";
+
+function generateToken(payload: object): string {
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: "30d" });
+}
+
+app.get("/api/auth/google", (req, res) => {
+  const state = crypto.randomBytes(16).toString("hex");
+  const params = new URLSearchParams({
+    client_id: GOOGLE_CLIENT_ID,
+    redirect_uri: GOOGLE_CALLBACK_URL,
+    response_type: "code",
+    scope: "openid email profile",
+    state,
+    access_type: "offline",
+    prompt: "select_account",
+  });
+  res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params}`);
+});
+
+app.get("/api/auth/google/callback", async (req, res) => {
+  const { code, state, error } = req.query;
+  if (error || !code) {
+    return res.redirect(`${APP_URL}?auth_error=${error || "access_denied"}`);
+  }
+
+  try {
+    // Exchange auth code for tokens
+    const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        code: code as string,
+        client_id: GOOGLE_CLIENT_ID,
+        client_secret: GOOGLE_CLIENT_SECRET,
+        redirect_uri: GOOGLE_CALLBACK_URL,
+        grant_type: "authorization_code",
+      }),
+    });
+    const tokens = await tokenRes.json();
+    if (!tokens.id_token) {
+      return res.redirect(`${APP_URL}?auth_error=token_exchange_failed`);
+    }
+
+    // Decode the Google ID token to get user info
+    const payloadBase64 = tokens.id_token.split(".")[1];
+    const payload = JSON.parse(Buffer.from(payloadBase64, "base64").toString());
+    const googleEmail = payload.email?.toLowerCase();
+    const googleName = payload.name || googleEmail?.split("@")[0] || "User";
+
+    if (!googleEmail) {
+      return res.redirect(`${APP_URL}?auth_error=no_email`);
+    }
+
+    // Find or create user
+    let user = await UserModel.findOne({ email: googleEmail });
+    if (!user) {
+      user = await UserModel.create({
+        uid: `user_${crypto.randomBytes(4).toString("hex")}`,
+        email: googleEmail,
+        password: crypto.randomBytes(16).toString("hex"),
+        subscription: "free",
+        businessProfile: {
+          name: googleName, phone: "", email: googleEmail,
+          address: "", website: "", bankDetails: "",
+          signature: "", currency: "$", logo: "", stamp: "",
+        },
+        createdAt: new Date().toISOString(),
+      });
+    }
+
+    const { password: _, ...safeUser } = user.toObject();
+    const token = generateToken({ uid: safeUser.uid, email: safeUser.email });
+    res.redirect(`${APP_URL}?token=${token}`);
+  } catch (err) {
+    console.error("Google OAuth callback error:", err);
+    res.redirect(`${APP_URL}?auth_error=server_error`);
+  }
+});
+
+app.post("/api/auth/google/token", async (req, res) => {
+  const { token } = req.body;
+  if (!token) return res.status(400).json({ error: "Token required" });
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as { uid: string; email: string };
+    const user = await UserModel.findOne({ uid: decoded.uid });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    const { password: _, ...safeUser } = user.toObject();
+    res.json(safeUser);
+  } catch {
+    res.status(401).json({ error: "Invalid or expired token" });
+  }
 });
 
 // Business Profile
