@@ -39,7 +39,7 @@ jobs:
         run: npm install
 
       - name: Build web assets
-        run: VITE_APP_ENV=mobile npm run build
+        run: VITE_APP_ENV=mobile VITE_API_URL=https://recieptflow.onrender.com npm run build
 
       - name: Sync Capacitor Android platform
         run: npx cap sync android

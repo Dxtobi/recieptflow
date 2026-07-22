@@ -84,7 +84,8 @@ function AppContent() {
       // Clean URL
       window.history.replaceState({}, "", window.location.pathname);
       // Exchange token for user and log in
-      fetch("/api/auth/google/token", {
+      const apiBase = import.meta.env.VITE_API_URL || "";
+      fetch(`${apiBase}/api/auth/google/token`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token }),
@@ -538,7 +539,8 @@ function AppContent() {
 
             <button
               onClick={() => {
-                const authUrl = "/api/auth/google";
+                const apiBase = import.meta.env.VITE_API_URL || window.location.origin;
+                const authUrl = `${apiBase}/api/auth/google`;
                 if (isNativeApp()) {
                   window.open(authUrl, "_system");
                 } else {
