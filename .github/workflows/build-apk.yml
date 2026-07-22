@@ -41,36 +41,20 @@ jobs:
       - name: Build web assets
         run: VITE_APP_ENV=mobile npm run build
 
-      - name: Add and Sync Capacitor Android platform
-        run: |
-          # Backup custom icon files from git
-          mkdir -p /tmp/android-icons
-          if [ -d android/app/src/main/res/mipmap-hdpi ]; then
-            cp -r android/app/src/main/res/mipmap-* /tmp/android-icons/
-          fi
-          rm -rf android
-          npx cap add android
-          # Restore custom icons
-          if [ -d /tmp/android-icons/mipmap-hdpi ]; then
-            cp -r /tmp/android-icons/* android/app/src/main/res/
-          fi
-          npx cap sync android
+      - name: Sync Capacitor Android platform
+        run: npx cap sync android
 
       - name: Build Android APK
         run: cd android && ./gradlew assembleDebug
 
-      - name: Rename APK with version
-        id: rename
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          echo "version=v${VERSION}" >> $GITHUB_OUTPUT
-          cp android/app/build/outputs/apk/debug/app-debug.apk "ReceiptFlow-v${VERSION}.apk"
+      - name: Rename APK
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk ReceiptFlow.apk
 
       - name: Upload APK as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ReceiptFlow-${{ steps.rename.outputs.version }}
-          path: ReceiptFlow-*.apk
+          name: ReceiptFlow-APK
+          path: ReceiptFlow.apk
           if-no-files-found: error
 
       - name: Upload APK to Latest Release
@@ -78,7 +62,7 @@ jobs:
         with:
           tag: latest
           name: Latest Build
-          artifacts: ReceiptFlow-*.apk
+          artifacts: ReceiptFlow.apk
           artifactContentType: application/vnd.android.package-archive
           allowUpdates: true
           replacesArtifacts: true

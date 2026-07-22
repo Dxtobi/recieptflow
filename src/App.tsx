@@ -259,7 +259,7 @@ function AppContent() {
       const data = await res.json();
       setLandingStats(prev => prev ? { ...prev, totalDownloads: data.totalDownloads } : prev);
     } catch {}
-    window.open("https://github.com/Dxtobi/recieptflow/releases/download/latest/app-debug.apk", "_blank");
+    window.open("https://github.com/Dxtobi/recieptflow/releases/download/latest/ReceiptFlow.apk", "_blank");
   };
 
   // WhatsApp share generator
@@ -530,30 +530,39 @@ function AppContent() {
               </button>
             </form>
 
-            {isNativeApp() ? (
-              <button
-                onClick={() => { window.location.href = "/api/auth/google"; }}
-                className="w-full py-2.5 border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-xs font-bold rounded-xl transition flex items-center justify-center gap-2"
-              >
-                <span className="w-5 h-5 bg-white rounded-full flex items-center justify-center text-[11px] font-bold text-zinc-900 border border-zinc-200">G</span>
-                Sign in with Google
-              </button>
-            ) : (
-              <>
-                <div className="relative flex py-2 items-center">
-                  <div className="flex-grow border-t border-zinc-200 dark:border-zinc-800"></div>
-                  <span className="flex-shrink mx-4 text-zinc-400 text-[10px] uppercase font-bold tracking-wider">Quick Fill Demo</span>
-                  <div className="flex-grow border-t border-zinc-200 dark:border-zinc-800"></div>
-                </div>
+            <div className="relative flex py-2 items-center">
+              <div className="flex-grow border-t border-zinc-200 dark:border-zinc-800"></div>
+              <span className="flex-shrink mx-4 text-zinc-400 text-[10px] uppercase font-bold tracking-wider">Or</span>
+              <div className="flex-grow border-t border-zinc-200 dark:border-zinc-800"></div>
+            </div>
 
-                <button
-                  onClick={autofillDemo}
-                  className="w-full py-2.5 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-750 dark:text-zinc-200 text-xs font-bold rounded-xl transition"
-                >
-                  Autofill Pro Demo Credentials
-                </button>
-              </>
-            )}
+            <button
+              onClick={() => {
+                const authUrl = "/api/auth/google";
+                if (isNativeApp()) {
+                  window.open(authUrl, "_system");
+                } else {
+                  window.location.href = authUrl;
+                }
+              }}
+              className="w-full py-2.5 border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-xs font-bold rounded-xl transition flex items-center justify-center gap-2"
+            >
+              <span className="w-5 h-5 bg-white rounded-full flex items-center justify-center text-[11px] font-bold text-zinc-900 border border-zinc-200">G</span>
+              Sign in with Google
+            </button>
+
+            <div className="relative flex py-2 items-center">
+              <div className="flex-grow border-t border-zinc-200 dark:border-zinc-800"></div>
+              <span className="flex-shrink mx-4 text-zinc-400 text-[10px] uppercase font-bold tracking-wider">Quick Fill Demo</span>
+              <div className="flex-grow border-t border-zinc-200 dark:border-zinc-800"></div>
+            </div>
+
+            <button
+              onClick={autofillDemo}
+              className="w-full py-2.5 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-750 dark:text-zinc-200 text-xs font-bold rounded-xl transition"
+            >
+              Autofill Pro Demo Credentials
+            </button>
           </div>
 
           <div className="text-center space-y-1 text-xs">
@@ -567,10 +576,10 @@ function AppContent() {
               </button>
             </p>
             <button
-              onClick={() => setAppState("landing")}
+              onClick={() => isNativeApp() ? setAppState("workspace") : setAppState("landing")}
               className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
             >
-              ← Back to home page
+              ← {isNativeApp() ? "Back to Dashboard" : "Back to home page"}
             </button>
           </div>
 
