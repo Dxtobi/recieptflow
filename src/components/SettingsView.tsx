@@ -232,7 +232,7 @@ export default function SettingsView({
 
           </div>
 
-          <div className="flex items-center justify-between border-t border-zinc-200 dark:border-zinc-800 pt-4 mt-2">
+          <div className="flex items-center justify-between border-t border-zinc-200 dark:border-zinc-800 pt-4 mt-2 gap-3 flex-wrap">
             <div>
               {saveSuccess && (
                 <p className="text-xs font-semibold text-emerald-600 flex items-center gap-1">

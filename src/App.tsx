@@ -263,36 +263,36 @@ function AppContent() {
     return (
       <div className="min-h-screen bg-white dark:bg-zinc-950 font-sans flex flex-col justify-between text-zinc-800 dark:text-zinc-200 transition-colors">
         {/* Landing Header */}
-        <header className="max-w-7xl mx-auto w-full px-6 py-5 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-zinc-900 dark:bg-zinc-100 rounded-xl flex items-center justify-center text-white dark:text-zinc-950 shadow-sm">
-              <FileText className="w-5 h-5" />
+        <header className="max-w-7xl mx-auto w-full px-3 sm:px-6 py-4 sm:py-5 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 shrink-0 bg-zinc-900 dark:bg-zinc-100 rounded-xl flex items-center justify-center text-white dark:text-zinc-950 shadow-sm">
+              <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <div>
-              <h1 className="font-extrabold text-lg tracking-tight text-zinc-900 dark:text-white">ReceiptFlow</h1>
-              <p className="text-[10px] text-zinc-400 font-mono">Receipt Generator</p>
+            <div className="min-w-0">
+              <h1 className="font-extrabold text-base sm:text-lg tracking-tight text-zinc-900 dark:text-white truncate">ReceiptFlow</h1>
+              <p className="text-[9px] sm:text-[10px] text-zinc-400 font-mono hidden sm:block">Receipt Generator</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             <button
               onClick={toggleTheme}
-              className="p-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl text-zinc-500 dark:text-zinc-400 transition"
+              className="p-1.5 sm:p-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl text-zinc-500 dark:text-zinc-400 transition"
             >
-              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {theme === "dark" ? <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
             </button>
 
             <button
               onClick={() => { setAuthMode("login"); setAppState("auth"); }}
-              className="px-4 py-2 text-xs font-bold text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition"
+              className="px-2.5 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition whitespace-nowrap"
             >
               Sign In
             </button>
             <button
               onClick={() => { setAuthMode("register"); setAppState("auth"); }}
-              className="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-zinc-100 dark:text-zinc-950 text-xs font-bold rounded-xl shadow-sm transition"
+              className="px-2.5 sm:px-4 py-1.5 sm:py-2 bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-zinc-100 dark:text-zinc-950 text-[10px] sm:text-xs font-bold rounded-xl shadow-sm transition whitespace-nowrap"
             >
-              Register Free
+              Register
             </button>
           </div>
         </header>
@@ -705,8 +705,8 @@ function AppContent() {
               <Menu className="w-5 h-5" />
             </button>
 
-          <h2 className="text-sm font-extrabold text-zinc-900 dark:text-white capitalize flex items-center gap-1.5">
-                <span>{activeTab === "create" ? "New Receipt" : activeTab === "settings" ? "Settings" : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}</span>
+          <h2 className="text-sm font-extrabold text-zinc-900 dark:text-white capitalize flex items-center gap-1.5 min-w-0">
+                <span className="truncate">{activeTab === "create" ? "New Receipt" : activeTab === "settings" ? "Settings" : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}</span>
                 {!isRegisteredUser && activeTab === "create" && (
                   <span className="text-[9px] px-1.5 py-0.5 bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 rounded font-medium">GUEST</span>
                 )}
@@ -730,11 +730,11 @@ function AppContent() {
             </button>
 
             <div className="hidden sm:block text-right">
-              <h4 className="text-xs font-bold text-zinc-900 dark:text-zinc-100 leading-tight">
+              <h4 className="text-xs font-bold text-zinc-900 dark:text-zinc-100 leading-tight truncate max-w-[160px]">
                 {store.businessProfile.name || "My Business"}
               </h4>
               <p className="text-[9px] text-zinc-400">
-                Prefix: RF • Currency: {store.businessProfile.currency || "$"}
+                RF • {store.businessProfile.currency || "$"}
               </p>
             </div>
           </div>

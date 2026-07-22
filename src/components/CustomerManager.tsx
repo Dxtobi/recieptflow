@@ -167,7 +167,7 @@ export default function CustomerManager({
                 {cust.phone && (
                   <p className="flex items-center gap-1.5">
                     <Phone className="w-3 h-3 text-zinc-400 shrink-0" />
-                    <span>{cust.phone}</span>
+                    <span className="truncate">{cust.phone}</span>
                   </p>
                 )}
                 {cust.email && (

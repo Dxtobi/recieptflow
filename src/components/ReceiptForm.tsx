@@ -444,16 +444,16 @@ export default function ReceiptForm({
 
       {/* Customer Info Section */}
       <div className="space-y-3 pt-2 border-t border-zinc-200 dark:border-zinc-800">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2 flex-wrap">
           <h3 className="text-xs uppercase font-extrabold tracking-wider text-zinc-400">Customer</h3>
           
           {customers.length > 0 && (
             <div className="flex items-center gap-1.5">
-              <span className="text-xs text-zinc-400">Saved:</span>
+              <span className="text-xs text-zinc-400 hidden sm:inline">Saved:</span>
               <select
                 value={selectedCustomerId}
                 onChange={handleCustomerSelect}
-                className="text-xs font-medium px-2 py-1 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-zinc-800 dark:text-zinc-200 focus:outline-none"
+                className="text-xs font-medium px-2 py-1 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-zinc-800 dark:text-zinc-200 focus:outline-none max-w-[160px] truncate"
               >
                 <option value="">-- Choose --</option>
                 {customers.map(c => (
@@ -719,7 +719,7 @@ export default function ReceiptForm({
       </div>
 
       {/* Footer Controls */}
-      <div className="flex items-center justify-end gap-3 border-t border-zinc-200 dark:border-zinc-800 pt-4 mt-2">
+      <div className="flex items-center justify-end gap-3 border-t border-zinc-200 dark:border-zinc-800 pt-4 mt-2 flex-wrap">
         <button
           type="button"
           onClick={() => onPreview(receipt)}
@@ -741,14 +741,14 @@ export default function ReceiptForm({
     {isScanning && (
       <div className="fixed inset-0 bg-zinc-950/80 backdrop-blur-md z-[100] flex items-center justify-center p-4">
         <div className="bg-white dark:bg-zinc-900 rounded-3xl w-full max-w-md overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-2xl">
-          <div className="p-5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="p-2 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 rounded-lg">
+          <div className="p-5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between gap-3 flex-wrap">
+            <div className="flex items-center gap-2 min-w-0 flex-1">
+              <div className="p-2 shrink-0 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 rounded-lg">
                 <Camera className="w-4 h-4" />
               </div>
-              <div>
-                <h3 className="text-sm font-extrabold text-zinc-900 dark:text-white">Device Camera QR Scanner</h3>
-                <p className="text-[10px] text-zinc-500">Scan customer details or product SKUs/barcodes</p>
+              <div className="min-w-0">
+                <h3 className="text-sm font-extrabold text-zinc-900 dark:text-white truncate">Device Camera QR Scanner</h3>
+                <p className="text-[10px] text-zinc-500 truncate">Scan customer details or product SKUs/barcodes</p>
               </div>
             </div>
             <button

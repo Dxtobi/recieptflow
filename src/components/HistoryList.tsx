@@ -113,23 +113,23 @@ export default function HistoryList({
               >
                 {/* Info */}
                 <div className="flex items-start gap-3.5">
-                  <div className="p-3 bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-xl">
+                  <div className="p-3 bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-xl shrink-0">
                     <FileText className="w-5 h-5" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <h4 className="text-sm font-bold text-zinc-900 dark:text-white">{receipt.customerName}</h4>
-                      <span className={`inline-block px-2 py-0.5 rounded border text-[9px] uppercase font-bold tracking-wider ${statusStyle}`}>
+                      <h4 className="text-sm font-bold text-zinc-900 dark:text-white truncate">{receipt.customerName}</h4>
+                      <span className={`inline-block px-2 py-0.5 rounded border text-[9px] uppercase font-bold tracking-wider shrink-0 ${statusStyle}`}>
                         {receipt.paymentStatus}
                       </span>
                     </div>
-                    <p className="text-xs text-zinc-500 font-mono mt-0.5">{receipt.receiptNumber}</p>
-                    <p className="text-[10px] text-zinc-400 mt-1">Issued: {formatDate(receipt.issueDate)} • Method: {receipt.paymentMethod}</p>
+                    <p className="text-xs text-zinc-500 font-mono mt-0.5 truncate">{receipt.receiptNumber}</p>
+                    <p className="text-[10px] text-zinc-400 mt-1 truncate">Issued: {formatDate(receipt.issueDate)} • {receipt.paymentMethod}</p>
                   </div>
                 </div>
 
                 {/* Pricing & Quick Controls */}
-                <div className="flex items-center justify-between md:justify-end w-full md:w-auto gap-6 border-t md:border-t-0 border-zinc-50 dark:border-zinc-800/50 pt-3 md:pt-0">
+                <div className="flex items-center justify-between md:justify-end w-full md:w-auto gap-3 sm:gap-6 border-t md:border-t-0 border-zinc-50 dark:border-zinc-800/50 pt-3 md:pt-0 flex-wrap">
                   <div className="md:text-right">
                     <p className="text-sm font-extrabold text-zinc-900 dark:text-white">{formatCurrency(receipt.total, currencySymbol)}</p>
                     <p className="text-[10px] text-zinc-400 mt-0.5">{receipt.items.length} items</p>

@@ -112,7 +112,7 @@ export default function Dashboard({ stats, receipts, currencySymbol, onSelectRec
               <div style={{ width: `${overduePct}%` }} className="h-full bg-zinc-200 dark:bg-zinc-600" title={`Overdue: ${overduePct}%`}></div>
             </div>
 
-            <div className="flex items-center justify-between text-xs text-zinc-600 dark:text-zinc-400 pt-1">
+            <div className="flex items-center justify-between text-xs text-zinc-600 dark:text-zinc-400 pt-1 gap-2 flex-wrap">
               <div className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-zinc-900 dark:bg-zinc-100"></span>
                 <span>Paid ({paidPct || 0}%)</span>
@@ -155,8 +155,8 @@ export default function Dashboard({ stats, receipts, currencySymbol, onSelectRec
                         <FileText className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="text-xs font-bold text-zinc-800 dark:text-zinc-200">{receipt.customerName}</p>
-                        <p className="text-[10px] text-zinc-500">{receipt.receiptNumber} • {receipt.issueDate}</p>
+                      <p className="text-xs font-bold text-zinc-800 dark:text-zinc-200 truncate">{receipt.customerName}</p>
+                      <p className="text-[10px] text-zinc-500 truncate">{receipt.receiptNumber} • {receipt.issueDate}</p>
                       </div>
                     </div>
                     
