@@ -221,7 +221,6 @@ function AppContent() {
     
     setIsExporting(true);
     try {
-      // Wait for images (QR code) to finish loading
       await Promise.all(
         Array.from(target.querySelectorAll("img")).map(
           (img) =>
@@ -230,20 +229,47 @@ function AppContent() {
               : new Promise((resolve) => { img.onload = resolve; img.onerror = resolve; })
         )
       );
-      
-      const canvas = await html2canvas(target, {
-        scale: 3,
+      await new Promise(r => setTimeout(r, 300));
+
+      const clone = target.cloneNode(true) as HTMLElement;
+      clone.style.position = "fixed";
+      clone.style.left = "-9999px";
+      clone.style.top = "0";
+      clone.style.width = "600px";
+      clone.style.overflow = "visible";
+      clone.style.aspectRatio = "auto";
+      document.body.appendChild(clone);
+
+      const canvas = await html2canvas(clone, {
+        scale: 2,
         useCORS: true,
-        backgroundColor: "#ffffff"
+        backgroundColor: "#ffffff",
+        width: 600,
+        height: clone.scrollHeight,
+        windowWidth: 600,
+        windowHeight: clone.scrollHeight,
       });
       
-      const image = canvas.toDataURL(`image/${format === "png" ? "png" : "jpeg"}`);
+      document.body.removeChild(clone);
+
+      const image = canvas.toDataURL(`image/${format === "png" ? "png" : "jpeg"}, 0.95`);
       const link = document.createElement("a");
       link.download = `Receipt-${previewReceipt?.receiptNumber || "Flow"}.${format}`;
       link.href = image;
       link.click();
     } catch (err) {
       console.error("Export to image failed", err);
+      try {
+        const canvas = await html2canvas(target, { scale: 1, useCORS: true, backgroundColor: "#ffffff" });
+        const image = canvas.toDataURL(`image/${format === "png" ? "png" : "jpeg"}`);
+        const link = document.createElement("a");
+        link.download = `Receipt-${previewReceipt?.receiptNumber || "Flow"}.${format}`;
+        link.href = image;
+        link.click();
+      } catch (err2) {
+        console.error("Fallback export also failed", err2);
+        alert("Export failed. Try using Print instead.");
+      }
     } finally {
       setIsExporting(false);
     }
@@ -263,31 +289,70 @@ function AppContent() {
     window.open("https://github.com/Dxtobi/recieptflow/releases/download/latest/ReceiptFlow.apk", "_blank");
   };
 
-  // WhatsApp share generator
-  const copyWhatsAppShare = () => {
+  // WhatsApp share generator - share as image
+  const shareWhatsAppImage = async () => {
     if (!previewReceipt) return;
-    const itemsText = previewReceipt.items
-      .map(item => `• ${item.name} (${item.quantity}x)`)
-      .join("\n");
-      
-    const text = `🧾 *RECEIPT ${previewReceipt.receiptNumber}*\n\n` +
-      `*Billed To:* ${previewReceipt.customerName}\n` +
-      `*Date:* ${previewReceipt.issueDate}\n\n` +
-      `*Items:*\n${itemsText}\n\n` +
-      `*Total Amount:* ${store.businessProfile.currency}${previewReceipt.total.toFixed(2)}\n` +
-      `*Payment Method:* ${previewReceipt.paymentMethod}\n` +
-      `*Payment Status:* ${previewReceipt.paymentStatus.toUpperCase()}\n\n` +
-      `Thank you for doing business with ${store.businessProfile.name || "us"}!`;
-      
+    setIsExporting(true);
     try {
-      navigator.clipboard.writeText(text);
-    } catch {
-      // clipboard may not be available on insecure contexts
+      const target = document.getElementById("printable-receipt");
+      if (!target) { setIsExporting(false); return; }
+
+      await Promise.all(
+        Array.from(target.querySelectorAll("img")).map(
+          (img) =>
+            img.complete
+              ? Promise.resolve()
+              : new Promise((resolve) => { img.onload = resolve; img.onerror = resolve; })
+        )
+      );
+      await new Promise(r => setTimeout(r, 300));
+
+      const clone = target.cloneNode(true) as HTMLElement;
+      clone.style.position = "fixed";
+      clone.style.left = "-9999px";
+      clone.style.top = "0";
+      clone.style.width = "600px";
+      clone.style.overflow = "visible";
+      clone.style.aspectRatio = "auto";
+      document.body.appendChild(clone);
+
+      const canvas = await html2canvas(clone, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        width: 600,
+        height: clone.scrollHeight,
+        windowWidth: 600,
+        windowHeight: clone.scrollHeight,
+      });
+      document.body.removeChild(clone);
+
+      const imageBlob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, "image/png"));
+      if (!imageBlob) { setIsExporting(false); return; }
+
+      const file = new File([imageBlob], `Receipt-${previewReceipt.receiptNumber}.png`, { type: "image/png" });
+
+      if (navigator.share && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: `Receipt ${previewReceipt.receiptNumber}` });
+      } else {
+        const url = URL.createObjectURL(imageBlob);
+        const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(`Receipt ${previewReceipt.receiptNumber}`)}`;
+        window.open(whatsappUrl, "_blank");
+        const link = document.createElement("a");
+        link.download = `Receipt-${previewReceipt.receiptNumber}.png`;
+        link.href = url;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 10000);
+      }
+    } catch (err) {
+      console.error("WhatsApp image share failed", err);
+      const itemsText = previewReceipt.items.map(item => `• ${item.name} (${item.quantity}x)`).join("\n");
+      const text = `🧾 *RECEIPT ${previewReceipt.receiptNumber}*\n\n*Billed To:* ${previewReceipt.customerName}\n*Date:* ${previewReceipt.issueDate}\n\n*Items:*\n${itemsText}\n\n*Total Amount:* ${store.businessProfile.currency}${previewReceipt.total.toFixed(2)}\n*Payment Method:* ${previewReceipt.paymentMethod}\n*Payment Status:* ${previewReceipt.paymentStatus.toUpperCase()}\n\nThank you for doing business with ${store.businessProfile.name || "us"}!`;
+      const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+      window.open(whatsappUrl, "_blank");
+    } finally {
+      setIsExporting(false);
     }
-    
-    // Open web sharing link
-    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
-    window.open(whatsappUrl, "_blank");
   };
 
   const promptProAuth = () => {
@@ -955,7 +1020,7 @@ function AppContent() {
 
                   {/* WhatsApp Share option */}
                   <button
-                    onClick={copyWhatsAppShare}
+                    onClick={shareWhatsAppImage}
                     className="w-full flex items-center gap-2 px-4 py-2.5 bg-zinc-50 hover:bg-zinc-100 text-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800 text-xs font-bold rounded-xl transition"
                   >
                     <Share2 className="w-4 h-4" /> Share on WhatsApp

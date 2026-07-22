@@ -52,6 +52,21 @@ interface AppState {
   resetActiveReceipt: () => void;
 }
 
+function getUserCurrency(): string {
+  try {
+    const lang = navigator.language || "en-US";
+    const region = lang.split("-")[1]?.toUpperCase() || "";
+    const nigeriaRegions = ["NG", "NGN"];
+    if (region === "NG" || nigeriaRegions.includes(region)) return "₦";
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (timeZone && (timeZone.includes("Lagos") || timeZone.includes("Africa/") && ["NG", "NGN", "WAT"].some(n => timeZone.includes(n)))) return "₦";
+    if (region === "US" || region === "GB" || region === "EU" || !region) return "$";
+    return "$";
+  } catch {
+    return "$";
+  }
+}
+
 const defaultBusinessProfile: BusinessProfile = {
   name: "",
   phone: "",
@@ -60,7 +75,7 @@ const defaultBusinessProfile: BusinessProfile = {
   website: "",
   bankDetails: "",
   signature: "",
-  currency: "$",
+  currency: getUserCurrency(),
   logo: "",
   stamp: ""
 };
