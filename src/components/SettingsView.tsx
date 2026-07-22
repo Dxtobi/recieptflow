@@ -39,9 +39,15 @@ export default function SettingsView({
         
         {/* Profile Card Summary */}
         <div className="bg-white dark:bg-zinc-900/50 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm text-center space-y-3">
-          <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-full flex items-center justify-center mx-auto border border-zinc-200 dark:border-zinc-700">
-            <User className="w-8 h-8" />
-          </div>
+          {profile.logo ? (
+            <div className="w-16 h-16 mx-auto rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700">
+              <img src={profile.logo} alt="Logo" className="w-full h-full object-contain" />
+            </div>
+          ) : (
+            <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-full flex items-center justify-center mx-auto border border-zinc-200 dark:border-zinc-700">
+              <User className="w-8 h-8" />
+            </div>
+          )}
           <div>
             <h3 className="font-bold text-zinc-900 dark:text-white truncate">
               {profile.name || "My Business Profile"}
@@ -127,6 +133,50 @@ export default function SettingsView({
                 onChange={(e) => handleFieldChange("name", e.target.value)}
                 className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 rounded-xl focus:outline-none focus:ring-1 focus:ring-zinc-400 text-zinc-900 dark:text-zinc-100"
               />
+            </div>
+
+            {/* Business Logo */}
+            <div className="md:col-span-2">
+              <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1">Business Logo</label>
+              <div className="flex items-center gap-4">
+                {profile.logo ? (
+                  <div className="relative w-16 h-16 rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden shrink-0">
+                    <img src={profile.logo} alt="Logo" className="w-full h-full object-contain" />
+                    <button
+                      type="button"
+                      onClick={() => handleFieldChange("logo", "")}
+                      className="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white rounded-full flex items-center justify-center text-[10px]"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ) : (
+                  <div className="w-16 h-16 rounded-xl border border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center text-zinc-400 shrink-0">
+                    <FileText className="w-6 h-6" />
+                  </div>
+                )}
+                <label className="flex-1 cursor-pointer">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const reader = new FileReader();
+                      reader.onload = (ev) => {
+                        const dataUrl = ev.target?.result as string;
+                        handleFieldChange("logo", dataUrl);
+                      };
+                      reader.readAsDataURL(file);
+                    }}
+                  />
+                  <div className="px-4 py-2 text-xs font-bold text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-700 transition text-center">
+                    {profile.logo ? "Replace Image" : "Upload Logo"}
+                  </div>
+                  <p className="text-[9px] text-zinc-400 mt-1">PNG or JPG • Stored locally in your browser</p>
+                </label>
+              </div>
             </div>
 
             {/* Currency Symbol */}

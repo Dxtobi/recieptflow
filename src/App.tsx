@@ -337,7 +337,7 @@ function AppContent() {
                 <h4 className="text-xl font-extrabold text-zinc-900 dark:text-white">
                   {landingStats ? (landingStats.totalReceipts + 1500).toLocaleString() : "—"}
                 </h4>
-                <p className="text-[10px] text-zinc-500 uppercase tracking-wider mt-0.5">Invoices Created</p>
+                <p className="text-[10px] text-zinc-500 uppercase tracking-wider mt-0.5">Receipts Created</p>
               </div>
               <div>
                 <h4 className="text-xl font-extrabold text-zinc-900 dark:text-white">

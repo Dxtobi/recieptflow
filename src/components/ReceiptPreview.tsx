@@ -54,6 +54,9 @@ export default function ReceiptPreview({ receipt, businessProfile, isRegisteredU
       >
         {/* Thermal Header */}
         <div className="text-center space-y-1 mb-4">
+          {businessProfile.logo && (
+            <img src={businessProfile.logo} alt="Logo" className="h-10 mx-auto mb-1 object-contain" />
+          )}
           <h2 className="text-sm font-bold uppercase tracking-wider">{businessProfile.name || "RECEIPTFLOW GUEST"}</h2>
           {businessProfile.phone && <p>{businessProfile.phone}</p>}
           {businessProfile.email && <p className="text-[10px]">{businessProfile.email}</p>}
@@ -228,6 +231,9 @@ export default function ReceiptPreview({ receipt, businessProfile, isRegisteredU
       <div>
         <div className={`flex flex-col md:flex-row md:justify-between items-start md:items-center border-b ${style.borderClr} pb-6 gap-4`}>
           <div>
+            {businessProfile.logo && (
+              <img src={businessProfile.logo} alt="Logo" className="h-12 mb-2 object-contain" />
+            )}
             <h1 className={`${style.fontHeading} text-2xl uppercase font-bold text-slate-900`}>
               {businessProfile.name || "RECEIPTFLOW GUEST"}
             </h1>
