@@ -713,7 +713,15 @@ function AppContent() {
               </h2>
           </div>
 
-          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              {!isRegisteredUser && (
+                <button
+                  onClick={() => { setAuthMode("login"); setAppState("auth"); }}
+                  className="md:hidden px-3 py-1.5 text-[10px] font-bold bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-zinc-100 dark:hover:bg-zinc-200 dark:text-zinc-950 rounded-lg transition"
+                >
+                  Sign In
+                </button>
+              )}
             <button
               onClick={toggleTheme}
               className="p-2 bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400 rounded-lg transition"
