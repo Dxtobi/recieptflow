@@ -144,6 +144,8 @@ app.post("/api/auth/register", async (req, res) => {
     createdAt: new Date().toISOString(),
   });
 
+  await StatsModel.updateOne({}, { $inc: { totalUsers: 1 } }, { upsert: true });
+
   const { password: _, ...userWithoutPassword } = newUser.toObject();
   res.status(201).json(userWithoutPassword);
 });
@@ -162,6 +164,8 @@ app.post("/api/auth/login", async (req, res) => {
   if (!user) {
     return res.status(401).json({ error: "Invalid email or password" });
   }
+
+  await StatsModel.updateOne({}, { $inc: { totalReceipts: 1 } }, { upsert: true });
 
   const { password: _, ...userWithoutPassword } = user.toObject();
   res.json(userWithoutPassword);
@@ -241,6 +245,7 @@ app.get("/api/auth/google/callback", async (req, res) => {
         },
         createdAt: new Date().toISOString(),
       });
+      await StatsModel.updateOne({}, { $inc: { totalUsers: 1 } }, { upsert: true });
     }
 
     const { password: _, ...safeUser } = user.toObject();
@@ -379,6 +384,8 @@ app.post("/api/receipts", async (req, res) => {
     templateStyle: templateStyle || "classic",
   });
 
+  await StatsModel.updateOne({}, { $inc: { totalReceipts: 1 } }, { upsert: true });
+
   res.status(201).json(newReceipt);
 });
 
@@ -452,16 +459,19 @@ app.get("/api/dashboard", async (req, res) => {
 
 // Global Stats (public, no auth required)
 app.get("/api/stats", async (req, res) => {
-  const [totalReceipts, totalUsers, statsDoc] = await Promise.all([
-    ReceiptModel.countDocuments(),
-    UserModel.countDocuments(),
-    StatsModel.findOne(),
-  ]);
-  res.json({
-    totalReceipts,
-    totalUsers,
-    totalDownloads: statsDoc?.totalDownloads || 0,
-  });
+  let stats = await StatsModel.findOne();
+  if (!stats) {
+    const [receiptCount, userCount] = await Promise.all([
+      ReceiptModel.countDocuments(),
+      UserModel.countDocuments(),
+    ]);
+    stats = await StatsModel.create({
+      totalReceipts: receiptCount,
+      totalUsers: userCount,
+      totalDownloads: 0,
+    });
+  }
+  res.json(stats);
 });
 
 // Track app download
